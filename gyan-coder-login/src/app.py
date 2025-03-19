@@ -1,6 +1,35 @@
 import streamlit as st
 import json
 import hashlib
+import re
+
+# Add custom CSS for centering
+st.markdown("""
+    <style>
+    .title-container {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+    }
+    .main-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+    /* Add styles for link-like button */
+    .stButton > button.link-button {
+        background: none;
+        border: none;
+        color: #4A90E2;
+        text-decoration: none;
+        padding: 0;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    .stButton > button.link-button:hover {
+        text-decoration: underline;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # Load user data from JSON file
 def load_users():
@@ -35,37 +64,91 @@ def add_user(username, password, email):
     save_users(users)
     return True
 
-# Streamlit UI
-st.title("Login / Signup System")
+# Change user password
+def change_password(username, email, new_password):
+    users = load_users()
+    if username in users and users[username]["email"] == email:
+        users[username]["password"] = hash_password(new_password)
+        save_users(users)
+        return True
+    return False
 
-# Create two columns for the Login and Signup buttons
-col1, col2, col3 = st.columns([1, 1, 4])
-with col1:
-    login_button = st.button("Login", key="login_tab_button")
+# Validate email format
+def is_valid_email(email):
+    return bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
+
+# Streamlit UI
+
+# Create columns to push buttons to the right
+col1, col2, col3 = st.columns([6, 1, 1])
 with col2:
+    login_button = st.button("Login", key="login_tab_button")
+with col3:
     signup_button = st.button("Signup", key="signup_tab_button")
+
+# Centered title using HTML/CSS
+st.markdown('<div class="title-container"><span class="main-title">GYAN CODER LOGIN</span></div>', unsafe_allow_html=True)
 
 # Initialize session state for tracking active tab if not exists
 if 'active_tab' not in st.session_state:
     st.session_state.active_tab = 'login'
+if 'show_forgot_password' not in st.session_state:
+    st.session_state.show_forgot_password = False
 
 # Update active tab based on button clicks
 if login_button:
     st.session_state.active_tab = 'login'
+    st.session_state.show_forgot_password = False
+
 if signup_button:
     st.session_state.active_tab = 'signup'
 
 # Display content based on active tab
 if st.session_state.active_tab == "login":
-    st.subheader("Login")
-    username = st.text_input("Username", key="login_username")
-    password = st.text_input("Password", type="password", key="login_password")
-    if st.button("Login", key="login_submit"):
-        if verify_user(username, password):
-            st.success(f"Welcome, {username}!")
-            st.session_state["authenticated"] = True
-        else:
-            st.error("Invalid username or password.")
+    if not st.session_state.show_forgot_password:
+        username = st.text_input("Username", key="login_username")
+        password = st.text_input("Password", type="password", key="login_password")
+
+        col_login, col_forgot = st.columns([1, 1])
+        with col_login:
+            if st.button("Login", key="login_submit"):
+                if verify_user(username, password):
+                    st.success(f"Welcome, {username}!")
+                    st.session_state["authenticated"] = True
+                else:
+                    st.error("Invalid username or password.")
+        with col_forgot:
+            if st.button("Forgot Password?", key="forgot_password", type="secondary", help="Click to reset your password"):
+                st.session_state.show_forgot_password = True
+                st.rerun()
+
+    else:
+        st.subheader("Reset Password")
+        reset_username = st.text_input("Username", key="reset_username")
+        reset_email = st.text_input("Email", key="reset_email")
+        new_password = st.text_input("New Password", type="password", key="new_password")
+        confirm_new_password = st.text_input("Confirm New Password", type="password", key="confirm_new_password")
+
+        col1, colspace, col2 = st.columns([1, 0.001, 1])
+
+        with col1:
+            if st.button("Reset Password", key="reset_password"):
+                if not is_valid_email(reset_email):
+                    st.error("Please enter a valid email address.")
+                elif new_password != confirm_new_password:
+                    st.error("Passwords do not match!")
+                else:
+                    if change_password(reset_username, reset_email, new_password):
+                        st.success("Password changed successfully!")
+                        st.session_state.show_forgot_password = False
+                        st.rerun()
+                    else:
+                        st.error("Invalid username or email!")
+
+        with col2:
+            if st.button("Back to Login", key="back_to_login"):
+                st.session_state.show_forgot_password = False
+                st.rerun()
 
 elif st.session_state.active_tab == "signup":
     st.subheader("Signup")
@@ -75,10 +158,13 @@ elif st.session_state.active_tab == "signup":
     confirm_password = st.text_input("Confirm Password", type="password", key="signup_confirm_password")
 
     if st.button("Signup", key="signup_submit"):
-        if new_password != confirm_password:
+        if not is_valid_email(new_email):
+            st.error("Please enter a valid email address.")
+        elif new_password != confirm_password:
             st.error("Passwords do not match!")
         elif add_user(new_username, new_password, new_email):
-            st.success("Account created successfully! Please login.")
+            st.success(f"Welcome, {new_username}!")
+            st.session_state["authenticated"] = True
         else:
             st.error("Username already exists. Try another one.")
 
@@ -88,4 +174,3 @@ if "authenticated" in st.session_state and st.session_state["authenticated"]:
     st.write("You have successfully logged in.")
     if st.button("Logout", key="logout_button"):
         st.session_state["authenticated"] = False
-        st.rerun()
