@@ -3,6 +3,34 @@ import streamlit as st
 # Set page config for chatbot
 st.set_page_config(page_title="Coding Chatbot", page_icon="🤖", layout="centered")
 
+# Initialize authentication in session state if not set
+if 'authenticated' not in st.session_state:
+    st.session_state['authenticated'] = False
+
+# If the user is not authenticated, redirect to login
+if not st.session_state['authenticated']:
+    st.warning("Please login first.")
+    st.stop()
+
+# Chatbot UI
+col1, col2, col3 = st.columns([6, 1, 1])
+with col1:
+    st.title("🤖 Code Helper Bot")
+with col2:
+    if st.button("Clear Chat", key="clear_chat_btn"):
+        st.session_state['chat_history'] = []  # Clear chat history
+        st.rerun()
+with col3:
+    if st.button("Logout", key="logout_btn"):
+        # Clear login state and redirect to login
+        st.session_state["authenticated"] = False
+        st.success("You have been logged out!")
+        st.rerun()
+
+# Initialize chat history if not available
+if 'chat_history' not in st.session_state:
+    st.session_state['chat_history'] = []
+
 # Custom CSS for right and left alignment of messages with black text
 st.markdown("""
     <style>
@@ -26,47 +54,8 @@ st.markdown("""
         clear: both;
         color: black;
     }
-    .chat-container {
-        overflow-y: auto;
-        max-height: 500px;
-    }
-    .button-container {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 10px;
-    }
-    .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
     </style>
 """, unsafe_allow_html=True)
-
-# Check if user is logged in
-if not st.session_state.get('authenticated'):
-    st.warning("Please login first.")
-    st.stop()
-
-# Chatbot Header with Aligned Buttons
-col1, col2, col3 = st.columns([6, 1, 1])
-with col1:
-    st.title("🤖 Code Helper Bot")
-with col2:
-    if st.button("Clear Chat", key="clear_chat_btn"):
-        st.session_state['chat_history'] = []  # Clear chat history
-        st.rerun()
-with col3:
-    if st.button("Logout", key="logout_btn"):
-        st.session_state["authenticated"] = False  # Logout user
-        st.success("You have been logged out!")
-        st.rerun()
-
-# Initialize chat history if not available
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = []
 
 # Function to return a hardcoded response
 def get_response(_):
