@@ -2,7 +2,7 @@ import streamlit as st
 import json
 import hashlib
 import re
-from streamlit_extras.switch_page_button import switch_page
+
 
 # Set page config at the very top
 st.set_page_config(page_title="Gyan Coder - Login", page_icon="🔐", layout="centered")
@@ -99,7 +99,7 @@ if st.session_state.active_tab == "login":
                 if verify_user(username, password):
                     st.success(f"Welcome, {username}!")
                     st.session_state["authenticated"] = True
-                    switch_page("chatbot")  # Redirect to chatbot
+                    st.switch_page("pages/chatbot.py")  # Changed this line
                 else:
                     st.error("Invalid username or password.")
         with col_forgot:
@@ -149,6 +149,6 @@ elif st.session_state.active_tab == "signup":
         elif add_user(new_username, new_password, new_email):
             st.success(f"Welcome, {new_username}!")
             st.session_state["authenticated"] = True
-            switch_page("chatbot")
+            st.switch_page("pages/chatbot.py")  # Changed this line
         else:
             st.error("Username already exists. Try another one.")
