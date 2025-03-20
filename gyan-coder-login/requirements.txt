@@ -8,3 +8,4 @@ langchain-core
 langgraph>0.2.27
 groq
 requests
+python-dotenv
