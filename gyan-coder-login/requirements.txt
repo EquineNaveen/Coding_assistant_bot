@@ -8,4 +8,3 @@ langchain-core
 langgraph>0.2.27
 groq
 requests
-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

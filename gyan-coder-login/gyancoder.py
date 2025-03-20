@@ -1,56 +1,68 @@
 import groq
 
-# --- Groq API Key ---
-GROQ_API_KEY = "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"  # Replace with your actual API key
+GROQ_API_KEY = "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"
 
-# --- Initialize Groq Client ---
 client = groq.Client(api_key=GROQ_API_KEY)
 
-# --- Model Configuration ---
-MODEL_NAME = "qwen-2.5-coder-32b"  # Supports 128K context
+MODEL_NAME = "qwen-2.5-coder-32b"
 
-# --- Chat History ---
-chat_history = []
+# System message with instruction to prioritize language or default to Python
+chat_history = [
+    {
+        "role": "system",
+        "content": (
+            "You are a coding assistant that generates code in the language specified by the user. "
+            "If the user does not mention a language, provide the code in Python by default."
+        )
+    }
+]
+
+# File to store conversation history
+LOG_FILE = "chat_history.txt"
+
+def log_conversation(user_query, assistant_reply):
+    """Logs user query and assistant response to a file with separators."""
+    with open(LOG_FILE, "a", encoding="utf-8") as file:
+        file.write(f"👤 User: {user_query}\n")
+        file.write(f"🤖 Bot: {assistant_reply}\n")
+        file.write("-----\n")  # Add separator for clarity
+
 
 def get_coding_response(user_query):
     """Sends user query to Groq API and returns the response."""
-    # Add user query to chat history
     chat_history.append({"role": "user", "content": user_query})
 
     try:
-        # --- Groq API Request ---
         response = client.chat.completions.create(
             model=MODEL_NAME,
             messages=chat_history,
             temperature=0.7,
             max_tokens=4096,
         )
-
-        # Extract assistant's reply
         assistant_reply = response.choices[0].message.content.strip()
-
-        # Add assistant reply to chat history
         chat_history.append({"role": "assistant", "content": assistant_reply})
+
+        # Log query and response to file
+        log_conversation(user_query, assistant_reply)
 
         return assistant_reply
 
     except Exception as e:
-        return f"Error: {str(e)}"
+        error_message = f"Error: {str(e)}"
+        log_conversation(user_query, error_message)
+        return error_message
 
-# --- Main Execution ---
+
 if __name__ == "__main__":
     print("💻 Coding Bot using Qwen2.5-Coder-32B (Groq API)")
     print("Type 'exit' to quit the conversation.\n")
 
     while True:
-        # Get user input
         user_query = input("👤 You: ")
         
-        # Exit condition
         if user_query.lower() == "exit":
             print("👋 Goodbye!")
             break
         
-        # Get and display response
         response = get_coding_response(user_query)
         print(f"🤖 Bot: {response}")
