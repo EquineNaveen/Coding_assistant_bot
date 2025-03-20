@@ -1,4 +1,6 @@
 import streamlit as st
+from gyancoder import get_coding_response
+
 
 # Set page config for chatbot
 st.set_page_config(page_title="Coding Chatbot", page_icon="🤖", layout="centered")
@@ -31,6 +33,7 @@ with col3:
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
 
+
 # Custom CSS for right and left alignment of messages with black text
 st.markdown("""
     <style>
@@ -57,9 +60,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Function to return a hardcoded response
-def get_response(_):
-    return "This is a placeholder response. I am ready to be replaced with an LLM! 🚀"
+
+# Function to send user query to gyancoder.py and get model response
+def get_response(user_query):
+    """Send user query to gyancoder.py and get model response."""
+    return get_coding_response(user_query)
+
 
 # Display chat history with custom CSS
 chat_container = st.container()
@@ -81,7 +87,7 @@ if user_input:
     st.session_state['chat_history'].append(("user", user_input, None))
     st.markdown(f"<div class='user-message'>{user_input}</div>", unsafe_allow_html=True)
 
-    # Generate and display hardcoded bot response
+    # Get and display response from gyancoder.py
     bot_response = get_response(user_input)
     st.session_state['chat_history'].append(("assistant", bot_response, None))
     st.markdown(f"<div class='bot-message'>{bot_response}</div>", unsafe_allow_html=True)

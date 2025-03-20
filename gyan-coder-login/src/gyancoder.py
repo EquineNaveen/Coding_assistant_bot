@@ -1,15 +1,16 @@
 import groq
 from dotenv import load_dotenv
 import os
+
+# Load environment variables
 load_dotenv()
 
-
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-# print(api_key)
-# GROQ_API_KEY = "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"
 
+# Initialize Groq client
 client = groq.Client(api_key=GROQ_API_KEY)
 
+# Model name
 MODEL_NAME = "qwen-2.5-coder-32b"
 
 # System message with instruction to prioritize language or default to Python
@@ -25,6 +26,7 @@ chat_history = [
 
 # File to store conversation history
 LOG_FILE = "chat_history.txt"
+
 
 def log_conversation(user_query, assistant_reply):
     """Logs user query and assistant response to a file with separators."""
@@ -65,10 +67,10 @@ if __name__ == "__main__":
 
     while True:
         user_query = input("👤 You: ")
-        
+
         if user_query.lower() == "exit":
             print("👋 Goodbye!")
             break
-        
+
         response = get_coding_response(user_query)
         print(f"🤖 Bot: {response}")

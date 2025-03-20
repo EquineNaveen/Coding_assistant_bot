@@ -2,7 +2,11 @@ import streamlit as st
 import json
 import hashlib
 import re
+import sys
+import os
+from pages.chatbot import * 
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Set page config at the very top
 st.set_page_config(page_title="Gyan Coder - Login", page_icon="🔐", layout="centered")
