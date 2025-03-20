@@ -179,3 +179,64 @@ What specific task or problem would you like help with today?
 👤 User: jdkkv
 🤖 Bot: It looks like your input might be a typo or an incomplete request. Could you please provide more details or clarify what you need help with? If you're looking for code, please specify the task or problem you want to solve, and let me know which programming language you prefer.
 -----
+👤 User: write code for streamlit
+🤖 Bot: Certainly! Below is a simple example of a Streamlit application. This example creates a basic web app that takes a user's name as input and displays a greeting message.
+
+First, make sure you have Streamlit installed. You can install it using pip if you haven't already:
+
+```bash
+pip install streamlit
+```
+
+Now, here is the code for a basic Streamlit app:
+
+```python
+# Import the streamlit library
+import streamlit as st
+
+# Set the title of the app
+st.title('Hello Streamlit User!')
+
+# Add a header
+st.header('Welcome to the Streamlit App!')
+
+# Ask the user for their name
+name = st.text_input('Please enter your name:', 'Your Name')
+
+# Display a greeting message
+st.write(f'Hello, {name}! Welcome to the Streamlit app.')
+
+# Add a button
+if st.button('Click Me'):
+    st.write('Button was clicked!')
+
+# Add a checkbox
+if st.checkbox('Show/hide text'):
+    st.write('This is a hidden text that is now visible!')
+
+# Add a selectbox
+option = st.selectbox(
+    'Select your favorite color:',
+    ('Red', 'Green', 'Blue')
+)
+st.write(f'You selected: {option}')
+
+# Add a slider
+age = st.slider('How old are you?', 0, 100, 25)
+st.write(f'You are {age} years old.')
+
+# Add a sidebar
+st.sidebar.header('Sidebar')
+st.sidebar.write('This is a sidebar.')
+side_option = st.sidebar.selectbox('Select an option:', ('Option 1', 'Option 2', 'Option 3'))
+st.sidebar.write(f'You selected: {side_option}')
+```
+
+To run this Streamlit app, save the code in a file, for example, `app.py`, and then run it using the following command in your terminal:
+
+```bash
+streamlit run app.py
+```
+
+This will start a local web server and open the app in your default web browser. You can then interact with the app directly from your browser.
+-----
