@@ -75,9 +75,13 @@ with chat_container:
         if role == "user":
             st.markdown(f"<div class='user-message'>{text}</div>", unsafe_allow_html=True)
         else:
-            st.markdown(f"<div class='bot-message'>{text}</div>", unsafe_allow_html=True)
-        if code:
-            st.code(code, language="python")
+            # If the response has code and explanation
+            if code:
+                st.markdown(f"<div class='bot-message'>{text}</div>", unsafe_allow_html=True)
+                st.code(code, language="python")  # ✅ Proper code block with highlighting
+            else:
+                # Properly render markdown for headings and explanations
+                st.markdown(text, unsafe_allow_html=False)  # ✅ Correct markdown parsing
 
 # Handle user input
 user_input = st.chat_input("Ask me anything about coding...")
@@ -89,5 +93,23 @@ if user_input:
 
     # Get and display response from gyancoder.py
     bot_response = get_response(user_input)
-    st.session_state['chat_history'].append(("assistant", bot_response, None))
-    st.markdown(f"<div class='bot-message'>{bot_response}</div>", unsafe_allow_html=True)
+
+    # Check if the response contains a code block
+    if "```python" in bot_response and "```" in bot_response:
+        # Extract the explanation and code block
+        code_start = bot_response.find("```python") + 9
+        code_end = bot_response.find("```", code_start)
+        code_block = bot_response[code_start:code_end].strip()
+        bot_message = bot_response.replace(f"```python\n{code_block}\n```", "").strip()
+
+        # Add bot response to history with extracted code
+        st.session_state['chat_history'].append(("assistant", bot_message, code_block))
+
+        # Display explanation (if any) and code block
+        if bot_message:
+            st.markdown(bot_message, unsafe_allow_html=False)  # ✅ Fixed: Correctly display headings
+        st.code(code_block, language="python")  # ✅ Properly display code
+    else:
+        # Add plain text bot response if no code is detected
+        st.session_state['chat_history'].append(("assistant", bot_response, None))
+        st.markdown(bot_response, unsafe_allow_html=False)  # ✅ Correct markdown display
