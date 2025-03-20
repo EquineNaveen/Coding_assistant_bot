@@ -4,7 +4,8 @@ import hashlib
 import re
 import sys
 import os
-from pages.chatbot import * 
+from streamlit.runtime.scriptrunner import get_script_run_ctx
+from streamlit.runtime.runtime import Runtime
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -81,6 +82,10 @@ if 'active_tab' not in st.session_state:
 if 'show_forgot_password' not in st.session_state:
     st.session_state.show_forgot_password = False
 
+# Initialize authentication state if not present
+if 'authenticated' not in st.session_state:
+    st.session_state['authenticated'] = False
+
 # Toggle between login and signup
 col1, col2, col3 = st.columns([6, 1, 1])
 with col2:
@@ -101,9 +106,9 @@ if st.session_state.active_tab == "login":
         with col_login:
             if st.button("Login", key="login_submit"):
                 if verify_user(username, password):
-                    st.success(f"Welcome, {username}!")
                     st.session_state["authenticated"] = True
-                    st.switch_page("pages/chatbot.py")  # Changed this line
+                    st.success(f"Welcome, {username}!")
+                    st.switch_page("pages/chatbot.py")
                 else:
                     st.error("Invalid username or password.")
         with col_forgot:
@@ -153,6 +158,6 @@ elif st.session_state.active_tab == "signup":
         elif add_user(new_username, new_password, new_email):
             st.success(f"Welcome, {new_username}!")
             st.session_state["authenticated"] = True
-            st.switch_page("pages/chatbot.py")  # Changed this line
+            st.switch_page("pages/chatbot.py")  # Changed from st.rerun() to st.switch_page()
         else:
             st.error("Username already exists. Try another one.")

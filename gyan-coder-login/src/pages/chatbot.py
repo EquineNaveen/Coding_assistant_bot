@@ -1,18 +1,17 @@
 import streamlit as st
 from gyancoder import get_coding_response
 
-
-# Set page config for chatbot
-st.set_page_config(page_title="Coding Chatbot", page_icon="🤖", layout="centered")
-
-# Initialize authentication in session state if not set
+# Initialize authentication state if not present
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
-# If the user is not authenticated, redirect to login
+# Check authentication
 if not st.session_state['authenticated']:
     st.warning("Please login first.")
     st.stop()
+
+# Set page config for chatbot
+st.set_page_config(page_title="Coding Chatbot", page_icon="🤖", layout="centered")
 
 # Chatbot UI
 col1, col2, col3 = st.columns([6, 1, 1])
@@ -32,7 +31,6 @@ with col3:
 # Initialize chat history if not available
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
-
 
 # Custom CSS for right and left alignment of messages with black text
 st.markdown("""
@@ -60,12 +58,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
 # Function to send user query to gyancoder.py and get model response
 def get_response(user_query):
     """Send user query to gyancoder.py and get model response."""
     return get_coding_response(user_query)
-
 
 # Display chat history with custom CSS
 chat_container = st.container()
