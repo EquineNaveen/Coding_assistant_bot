@@ -176,3 +176,6 @@ What specific task or problem would you like help with today?
 👤 User: ok thankyou
 🤖 Bot: You're welcome! If you have any specific questions or need assistance with something, feel free to ask. Have a great day!
 -----
+👤 User: jdkkv
+🤖 Bot: It looks like your input might be a typo or an incomplete request. Could you please provide more details or clarify what you need help with? If you're looking for code, please specify the task or problem you want to solve, and let me know which programming language you prefer.
+-----
