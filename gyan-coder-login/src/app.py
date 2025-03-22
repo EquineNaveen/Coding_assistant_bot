@@ -51,6 +51,17 @@ def verify_user(username, password):
         return True
     return False
 
+# Create user chat directory
+def create_user_chat_directory(username):
+    # Create the parent directory if it doesn't exist
+    parent_dir = "D:\\gyanstreamlit\\gyan-coder-login\\src\\users_chat"
+    os.makedirs(parent_dir, exist_ok=True)
+    
+    # Create user-specific directory
+    user_dir = os.path.join(parent_dir, username)
+    os.makedirs(user_dir, exist_ok=True)
+    return user_dir
+
 # Add a new user to the system
 def add_user(username, password, email):
     users = load_users()
@@ -58,6 +69,9 @@ def add_user(username, password, email):
         return False
     users[username] = {"password": hash_password(password), "email": email}
     save_users(users)
+    
+    # Create chat directory for the new user
+    create_user_chat_directory(username)
     return True
 
 # Change user password

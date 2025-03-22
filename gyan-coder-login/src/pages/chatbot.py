@@ -18,7 +18,7 @@ col1, col2, col3 = st.columns([6, 1, 1])
 with col1:
     st.title("🤖 Code Helper Bot")
 with col2:
-    if st.button("Clear Chat", key="clear_chat_btn"):
+    if st.button("New Chat", key="clear_chat_btn"):
         st.session_state['chat_history'] = []  # Clear chat history
         st.rerun()
 with col3:
