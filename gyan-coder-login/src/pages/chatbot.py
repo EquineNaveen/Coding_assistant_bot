@@ -123,18 +123,54 @@ st.markdown("""
         color: black;
     }
 
-    /* New styles for sidebar buttons */
-    .stButton > button {
+    /* Target only sidebar buttons using more specific selectors */
+    section[data-testid="stSidebar"] .stButton > button {
         width: 100%;
-        text-align: left;
-        padding: 10px;
+        text-align: left !important;
+        padding: 1px 8px !important;
         border: none;
         background-color: transparent;
-        font-size: 14px;
-        margin: 2px 0;
+        font-size: 13px;
+        margin: 0 !important;
+        line-height: 1.5;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
+        min-height: 0 !important;
+        height: auto !important;
+        border-radius: 6px !important;
     }
-    .stButton > button:hover {
+    
+    section[data-testid="stSidebar"] .stButton > button > div {
+        text-align: left !important;
+        display: inline-block;
+        width: 100%;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button:hover {
         background-color: #f0f2f6;
+    }
+    
+    /* Additional spacing reduction for sidebar elements */
+    section[data-testid="stSidebar"] .element-container {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    section[data-testid="stSidebar"] .st-emotion-cache-16txtl3 {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    section[data-testid="stSidebar"] .st-emotion-cache-16idsys p {
+        margin-bottom: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton {
+        margin-bottom: -10px !important;
+        border-radius: 2px !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -157,9 +193,9 @@ if chat_histories:
             # Create a unique key using index
             unique_key = f"chat_history_{idx}"
             if st.button(
-                f"{chat_data['first_query'][:40]}{'...' if len(chat_data['first_query']) > 40 else ''}",
+                f"{chat_data['first_query'][:30]}{'...' if len(chat_data['first_query']) > 30 else ''}",
                 key=unique_key,
-                use_container_width=True
+                use_container_width=True  # Changed back to True for full width
             ):
                 st.session_state['chat_history'] = chat_data['messages']
                 st.rerun()
