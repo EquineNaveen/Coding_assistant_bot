@@ -157,7 +157,7 @@ if chat_histories:
             # Create a unique key using index
             unique_key = f"chat_history_{idx}"
             if st.button(
-                f"💬 {chat_data['first_query'][:40]}{'...' if len(chat_data['first_query']) > 40 else ''}",
+                f"{chat_data['first_query'][:40]}{'...' if len(chat_data['first_query']) > 40 else ''}",
                 key=unique_key,
                 use_container_width=True
             ):
