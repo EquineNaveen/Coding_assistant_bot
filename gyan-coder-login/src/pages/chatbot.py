@@ -99,22 +99,6 @@ with col3:
         st.success("You have been logged out!")
         st.rerun()
 
-# Add chat history selector in the sidebar
-st.sidebar.title("Chat History")
-chat_histories = load_chat_histories()
-if chat_histories:
-    selected_chat = st.sidebar.selectbox(
-        "Select previous chat",
-        options=[f"{chat[1]['first_query']}" for chat in chat_histories],
-        index=None
-    )
-    
-    if selected_chat:
-        # Load selected chat
-        selected_index = [f"{chat[1]['first_query']}" for chat in chat_histories].index(selected_chat)
-        st.session_state['chat_history'] = chat_histories[selected_index][1]['messages']
-        st.rerun()
-
 # Custom CSS for right and left alignment of messages with black text
 st.markdown("""
     <style>
@@ -138,8 +122,49 @@ st.markdown("""
         clear: both;
         color: black;
     }
+
+    /* New styles for sidebar buttons */
+    .stButton > button {
+        width: 100%;
+        text-align: left;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        font-size: 14px;
+        margin: 2px 0;
+    }
+    .stButton > button:hover {
+        background-color: #f0f2f6;
+    }
     </style>
 """, unsafe_allow_html=True)
+
+# Updated chat history section with unique keys
+st.sidebar.title("Chat History")
+chat_histories = load_chat_histories()
+if chat_histories:
+    # Sort by timestamp in descending order
+    sorted_histories = sorted(
+        chat_histories,
+        key=lambda x: x[1].get('timestamp', ''),
+        reverse=True
+    )
+    
+    # Create a scrollable container for chat history
+    chat_history_container = st.sidebar.container()
+    with chat_history_container:
+        for idx, (chat_file, chat_data) in enumerate(sorted_histories):
+            # Create a unique key using index
+            unique_key = f"chat_history_{idx}"
+            if st.button(
+                f"💬 {chat_data['first_query'][:40]}{'...' if len(chat_data['first_query']) > 40 else ''}",
+                key=unique_key,
+                use_container_width=True
+            ):
+                st.session_state['chat_history'] = chat_data['messages']
+                st.rerun()
+else:
+    st.sidebar.info("No chat history available")
 
 # Display chat history with custom CSS
 chat_container = st.container()
