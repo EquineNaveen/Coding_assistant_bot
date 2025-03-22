@@ -121,6 +121,7 @@ if st.session_state.active_tab == "login":
             if st.button("Login", key="login_submit"):
                 if verify_user(username, password):
                     st.session_state["authenticated"] = True
+                    st.session_state["username"] = username  # Store username in session state
                     st.success(f"Welcome, {username}!")
                     st.switch_page("pages/chatbot.py")
                 else:
@@ -172,6 +173,7 @@ elif st.session_state.active_tab == "signup":
         elif add_user(new_username, new_password, new_email):
             st.success(f"Welcome, {new_username}!")
             st.session_state["authenticated"] = True
+            st.session_state["username"] = new_username  # Store username in session state
             st.switch_page("pages/chatbot.py")  # Changed from st.rerun() to st.switch_page()
         else:
             st.error("Username already exists. Try another one.")
