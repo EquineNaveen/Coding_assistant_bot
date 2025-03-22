@@ -23,13 +23,23 @@ def save_chat_history():
     if not st.session_state.get('chat_history'):
         return
     
+    # Get the first query from chat history
+    first_message = next((msg for msg in st.session_state['chat_history'] if msg[0] == "user"), None)
+    if not first_message:
+        return
+    
+    # Create filename from first query (limited to 50 chars, sanitized)
+    first_query = first_message[1][:50]  # Limit length
+    # Remove special characters and spaces, replace with underscores
+    safe_filename = "".join(c if c.isalnum() else "_" for c in first_query).strip("_")
+    filename = f"{safe_filename}.json"
+    
     user_dir = get_user_chat_dir()
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"chat_{timestamp}.json"
     filepath = user_dir / filename
     
     chat_data = {
-        'timestamp': timestamp,
+        'first_query': first_query,
+        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'messages': st.session_state['chat_history']
     }
     
@@ -95,13 +105,13 @@ chat_histories = load_chat_histories()
 if chat_histories:
     selected_chat = st.sidebar.selectbox(
         "Select previous chat",
-        options=[f"Chat from {chat[0].split('_')[1].split('.')[0]}" for chat in chat_histories],
+        options=[f"{chat[1]['first_query']}" for chat in chat_histories],
         index=None
     )
     
     if selected_chat:
         # Load selected chat
-        selected_index = [f"Chat from {chat[0].split('_')[1].split('.')[0]}" for chat in chat_histories].index(selected_chat)
+        selected_index = [f"{chat[1]['first_query']}" for chat in chat_histories].index(selected_chat)
         st.session_state['chat_history'] = chat_histories[selected_index][1]['messages']
         st.rerun()
 
