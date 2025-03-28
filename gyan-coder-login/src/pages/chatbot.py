@@ -73,6 +73,9 @@ if 'username' not in st.session_state:
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
 
+if 'logout' not in st.session_state:
+    st.session_state['logout'] = False
+
 # Persist authentication state using query parameters
 query_params = st.query_params
 
@@ -83,10 +86,13 @@ if not st.session_state['authenticated'] and 'authenticated' in query_params and
 
 # Check authentication
 if not st.session_state['authenticated']:
-    if st.button("Login", key="login_button"):
+    if st.session_state.get('logout', False):  # Check if the user has logged out
+        st.warning("You are not logged in. Please log in to continue.")
+        st.stop()
+    elif st.button("Login", key="login_button"):
         st.session_state['authenticated'] = True
         st.session_state['username'] = "default_user"  # Replace with actual username logic
-        st.experimental_rerun()
+        st.rerun()
     else:
         st.warning("You are not logged in. Please log in to continue.")
         st.stop()
@@ -118,11 +124,20 @@ with col2:
         st.rerun()
 with col3:
     if st.button("Logout", key="logout_btn"):
-        # Clear login state and redirect to login
-        st.session_state.clear()  # Clear all session state variables
-        st.query_params = {}  # Clear query parameters
-        st.success("You have been logged out!")
-        st.stop()  # Stop further execution to ensure the page is reset
+        if st.session_state.get('authenticated', False):
+            # Clear login state and redirect to login
+            st.session_state.clear()  # Clear all session state variables
+            st.session_state['logout'] = True  # Set logout flag
+            st.query_params = {}  # Clear query parameters
+            st.markdown(
+                "<p style='color: green; font-size: 16px; font-weight: bold; text-align: center;'>Logged out</p>",
+                unsafe_allow_html=True
+            )  # Display "Logged out" with styling
+            st.query_params = {"page": "login"}  # Redirect to login page
+            st.stop()  # Stop further execution to ensure the page is reset
+        else:
+            st.warning("You are not logged in. Please log in to continue.")
+            st.stop()
 
 # Custom CSS for right and left alignment of messages with black text
 st.markdown("""
