@@ -67,17 +67,41 @@ def get_response(user_query):
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
-if not st.session_state.get('username'):
-    st.warning("Please login first.")
-    st.stop()
+if 'username' not in st.session_state:
+    st.session_state['username'] = None
 
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
 
+# Persist authentication state using query parameters
+query_params = st.query_params
+
+# Restore session state from query parameters if available
+if not st.session_state['authenticated'] and 'authenticated' in query_params and 'username' in query_params:
+    st.session_state['authenticated'] = query_params['authenticated'] == 'true'
+    st.session_state['username'] = query_params['username']
+
 # Check authentication
 if not st.session_state['authenticated']:
-    st.warning("Please login first.")
+    if st.button("Login", key="login_button"):
+        st.session_state['authenticated'] = True
+        st.session_state['username'] = "default_user"  # Replace with actual username logic
+        st.experimental_rerun()
+    else:
+        st.warning("You are not logged in. Please log in to continue.")
+        st.stop()
+
+# Ensure username is set if authenticated
+if st.session_state['authenticated'] and not st.session_state['username']:
+    st.error("Session error: Username not found. Please log in again.")
+    st.session_state['authenticated'] = False
     st.stop()
+
+# Update query parameters to persist session state
+st.query_params = {
+    "authenticated": str(st.session_state['authenticated']).lower(),
+    "username": st.session_state['username']
+}
 
 # Set page config for chatbot
 st.set_page_config(page_title="Coding Chatbot", page_icon="🤖", layout="centered")
@@ -95,9 +119,10 @@ with col2:
 with col3:
     if st.button("Logout", key="logout_btn"):
         # Clear login state and redirect to login
-        st.session_state["authenticated"] = False
+        st.session_state.clear()  # Clear all session state variables
+        st.query_params = {}  # Clear query parameters
         st.success("You have been logged out!")
-        st.rerun()
+        st.stop()  # Stop further execution to ensure the page is reset
 
 # Custom CSS for right and left alignment of messages with black text
 st.markdown("""
