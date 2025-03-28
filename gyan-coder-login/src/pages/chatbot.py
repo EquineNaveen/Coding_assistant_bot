@@ -5,13 +5,6 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-# Redirect to login page if not authenticated
-if not st.session_state.get('authenticated', False):
-    st.warning("You are not logged in. Redirecting to login page...")
-    st.session_state.clear()  # Clear session state
-    st.query_params = {"page": "login"}  # Redirect to login page
-    st.stop()
-
 # Function definitions
 def get_user_chat_dir():
     """Create and return the user's chat directory path."""
@@ -93,7 +86,7 @@ if not st.session_state['authenticated']:
     if st.button("Login", key="login_button"):
         st.session_state['authenticated'] = True
         st.session_state['username'] = "default_user"  # Replace with actual username logic
-        st.rerun()  # Refresh the app
+        st.experimental_rerun()
     else:
         st.warning("You are not logged in. Please log in to continue.")
         st.stop()
@@ -127,8 +120,9 @@ with col3:
     if st.button("Logout", key="logout_btn"):
         # Clear login state and redirect to login
         st.session_state.clear()  # Clear all session state variables
-        st.query_params = {"authenticated": "false", "username": ""}  # Update query parameters
-        st.rerun()  # Redirect to the login page by refreshing the app
+        st.query_params = {}  # Clear query parameters
+        st.success("You have been logged out!")
+        st.stop()  # Stop further execution to ensure the page is reset
 
 # Custom CSS for right and left alignment of messages with black text
 st.markdown("""
