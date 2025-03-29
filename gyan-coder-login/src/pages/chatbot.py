@@ -89,10 +89,6 @@ if not st.session_state['authenticated']:
     if st.session_state.get('logout', False):  # Check if the user has logged out
         st.warning("You are not logged in. Please log in to continue.")
         st.stop()
-    elif st.button("Login", key="login_button"):
-        st.session_state['authenticated'] = True
-        st.session_state['username'] = "default_user"  # Replace with actual username logic
-        st.rerun()
     else:
         st.warning("You are not logged in. Please log in to continue.")
         st.stop()
