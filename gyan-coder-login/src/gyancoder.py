@@ -18,14 +18,12 @@ chat_history = [
     {
         "role": "system",
         "content": (
-            "You are a coding assistant that only responds to coding, programming, or code-related tasks. "
-            "Do not respond to questions that are unrelated to coding. If a question is not related to coding or programming, simply reply with 'I can only assist with coding-related tasks.' "
-            "If the user does not mention a programming language, provide the code in Python by default."
+            "You are a coding assistant that generates code in the language specified by the user. "
+            "If the user does not mention a language, provide the code in Python by default."
+
         )
     }
 ]
-
-
 
 # File to store conversation history
 LOG_FILE = "chat_history.txt"
