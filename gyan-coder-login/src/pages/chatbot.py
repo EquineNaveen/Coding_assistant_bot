@@ -336,7 +336,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Updated chat history section with improved alignment
-st.sidebar.title("Chat History")
+st.sidebar.title("Previous Chats")
 chat_histories = load_chat_histories()
 
 if chat_histories:
