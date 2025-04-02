@@ -12,6 +12,133 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # Set page config at the very top
 st.set_page_config(page_title="Gyan Coder - Login", page_icon="🔐", layout="centered")
 
+# Add CSS to remove all space in sidebar before we add any content
+st.markdown("""
+    <style>
+    /* More aggressive sidebar space removal targeting Streamlit's specific structure */
+    .main .block-container {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Target the root sidebar element */
+    [data-testid="stSidebar"] {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Target the sidebar content specifically */
+    .stSidebarContent, .css-1d391kg, .css-163ttbj, .css-1vq4p4l {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Target all sidebar blocks and containers */
+    [data-testid="stSidebar"] > div > div,
+    [data-testid="stSidebar"] > div,
+    [data-testid="stSidebar"] .block-container,
+    [data-testid="stSidebar"] .element-container {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Target the immediate children of the sidebar */
+    [data-testid="stSidebar"] > * {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Target any additional wrapping divs */
+    [data-testid="stSidebar"] div[data-stale="false"],
+    [data-testid="stSidebar"] div.withScreencast {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Target the very first elements in the sidebar */
+    [data-testid="stSidebar"] > div:first-child,
+    [data-testid="stSidebar"] > div > div:first-child,
+    [data-testid="stSidebar"] .element-container:first-child,
+    [data-testid="stSidebar"] div:first-of-type {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Target the image directly */
+    [data-testid="stSidebar"] img,
+    [data-testid="stSidebar"] [data-testid="stImage"] {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    /* The existing selectors */
+    section[data-testid="stSidebar"] > div {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    section[data-testid="stSidebar"] > div > div:first-child {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    section[data-testid="stSidebar"] .element-container:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    section[data-testid="stSidebar"] div:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    section[data-testid="stSidebar"] .block-container {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    section[data-testid="stSidebar"] div.block-container > div:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Display ISRO image in sidebar
+with st.sidebar:
+    # Use absolute path to the image
+    image_path = os.path.join(os.path.dirname(__file__), "assets", "isro.jpg")
+    
+    # Check if the image exists, if not, create a message
+    if os.path.exists(image_path):
+        st.image(image_path, use_column_width=True)
+    else:
+        st.warning(f"Image not found at: {image_path}")
+        st.info("Please make sure the 'assets' folder exists in the src directory and contains 'isro.jpg'")
+    
+    # Add a spacer before the horizontal line
+    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
+    
+    # Add a horizontal line separator after the image with better spacing
+    st.markdown("<hr style='margin-top: 5px; margin-bottom: 10px; border-width: 3px; background-color: #333;'>", unsafe_allow_html=True)
+    
+    # Add helper text in sidebar
+    st.markdown("### Your Coding Assistant")
+    st.markdown("- Ask for coding help")
+    st.markdown("- Get syntax examples")
+    st.markdown("- Request code snippets")
+    st.markdown("- Debugging assistance")
+
+# Hide default Streamlit sidebar navigation
+no_sidebar_style = """
+    <style>
+        div[data-testid="stSidebarNav"] {
+            display: none;
+        }
+    </style>
+"""
+st.markdown(no_sidebar_style, unsafe_allow_html=True)
+
 # Add custom CSS for styling
 st.markdown("""
     <style>
@@ -23,6 +150,11 @@ st.markdown("""
     .main-title {
         font-size: 2.5rem;
         font-weight: bold;
+    }
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background-color: #f5f5f5;
+        border-right: 1px solid #e0e0e0;
     }
     </style>
 """, unsafe_allow_html=True)
