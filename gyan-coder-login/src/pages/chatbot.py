@@ -148,6 +148,38 @@ with col3:
 # Custom CSS for right and left alignment of messages with black text
 st.markdown("""
     <style>
+    /* Hide default Streamlit sidebar navigation */
+    div[data-testid="stSidebarNav"] {
+        display: none;
+    }
+    
+    /* Remove space above first element in sidebar (ISRO image) */
+    section[data-testid="stSidebar"] > div:first-child > div:first-child {
+        margin-top: -25px !important;
+        padding-top: 0 !important;
+    }
+    
+    section[data-testid="stSidebar"] > div > div:first-child .element-container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    /* More aggressive targeting of sidebar padding */
+    section[data-testid="stSidebar"] .block-container {
+        padding-top: 0 !important;
+    }
+    
+    section[data-testid="stSidebar"] img {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Sidebar image container */
+    section[data-testid="stSidebar"] [data-testid="stImage"] {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
     .user-message {
         background-color: #DCF8C6;
         border-radius: 12px;
@@ -334,6 +366,32 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+# Add ISRO logo above Previous Chats title
+try:
+    # Try different possible paths for the image
+    image_paths = [
+        "isro.jpg",
+        Path(__file__).parent / "isro.jpg",
+        Path(__file__).parent.parent / "assets" / "isro.jpg",
+        Path(__file__).parent.parent / "static" / "isro.jpg"
+    ]
+    
+    image_found = False
+    for img_path in image_paths:
+        try:
+            if Path(img_path).exists():
+                st.sidebar.image(str(img_path), width=150, use_column_width=True)
+                image_found = True
+                break
+        except:
+            continue
+    
+    if not image_found:
+        # If image isn't found, display a placeholder or text instead
+        st.sidebar.markdown("### ISRO")
+except Exception as e:
+    st.sidebar.write("ISRO")  # Fallback text if image loading fails
 
 # Updated chat history section with improved alignment
 st.sidebar.title("Previous Chats")
