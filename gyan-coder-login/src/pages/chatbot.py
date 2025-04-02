@@ -59,6 +59,16 @@ def load_chat_histories():
     
     return sorted(chat_files, key=lambda x: x[0], reverse=True)
 
+def delete_chat_history(chat_file):
+    """Delete a specific chat history file."""
+    user_dir = get_user_chat_dir()
+    filepath = user_dir / chat_file
+    
+    if filepath.exists():
+        filepath.unlink()  # Delete the file
+        return True
+    return False
+
 def get_response(user_query):
     """Send user query to gyancoder.py and get model response."""
     return get_coding_response(user_query)
@@ -163,7 +173,7 @@ st.markdown("""
     section[data-testid="stSidebar"] .stButton > button {
         width: 100%;
         text-align: left !important;
-        padding: 1px 8px !important;
+        padding: 7px 8px !important;
         border: none;
         background-color: transparent;
         font-size: 13px;
@@ -208,12 +218,91 @@ st.markdown("""
         margin-bottom: -10px !important;
         border-radius: 2px !important;
     }
+    
+    /* Style for delete button - modified to make it smaller */
+    .delete-btn {
+        color: #ff4b4b;
+        background: none;
+        border: none;
+        cursor: pointer;
+        float: right;
+        padding: 0 3px;
+        font-size: 12px;
+        line-height: 1;
+    }
+    
+    /* For the delete icon button in sidebar */
+    section[data-testid="stSidebar"] .stButton:nth-child(2) > button {
+        font-size: 10px !important;
+        padding: 0 2px !important;
+        min-width: 20px !important;
+        height: 20px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Custom close button styling */
+    .close-button {
+        color: #777777 !important; /* Neutral gray color instead of red */
+        font-size: 8px !important; /* Smaller font size */
+        padding: 0 !important;
+        min-width: 16px !important;
+        height: 16px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        line-height: 1 !important;
+    }
+    
+    /* Improved chat history row styling */
+    .chat-history-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+    
+    /* Custom styling for sidebar column layout */
+    section[data-testid="stSidebar"] div.row-widget.stHorizontal {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+    
+    /* Chat history button in sidebar */
+    section[data-testid="stSidebar"] div.row-widget.stHorizontal > div:first-child .stButton > button {
+        padding: 2px 6px !important;
+        min-height: 24px !important;
+    }
+    
+    /* Delete button in sidebar */
+    section[data-testid="stSidebar"] div.row-widget.stHorizontal > div:last-child .stButton > button {
+        padding: 2px !important;
+        min-height: 24px !important;
+        min-width: 24px !important;
+        width: 24px !important;
+        height: 24px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        font-size: 12px !important;
+        color: #777 !important;
+    }
+    
+    .chat-title {
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Updated chat history section with unique keys
+# Updated chat history section with improved alignment
 st.sidebar.title("Chat History")
 chat_histories = load_chat_histories()
+
 if chat_histories:
     # Sort by timestamp in descending order
     sorted_histories = sorted(
@@ -222,19 +311,29 @@ if chat_histories:
         reverse=True
     )
     
-    # Create a scrollable container for chat history
-    chat_history_container = st.sidebar.container()
-    with chat_history_container:
-        for idx, (chat_file, chat_data) in enumerate(sorted_histories):
-            # Create a unique key using index
-            unique_key = f"chat_history_{idx}"
+    # Create a container for each history entry with a well-aligned close button
+    for idx, (chat_file, chat_data) in enumerate(sorted_histories):
+        col1, col2 = st.sidebar.columns([8, 1])  # Adjusted ratio for better alignment
+        
+        with col1:
+            # Chat history button
             if st.button(
                 f"{chat_data['first_query'][:30]}{'...' if len(chat_data['first_query']) > 30 else ''}",
-                key=unique_key,
-                use_container_width=True  # Changed back to True for full width
+                key=f"chat_history_{idx}",
+                use_container_width=True
             ):
                 st.session_state['chat_history'] = chat_data['messages']
                 st.rerun()
+        
+        with col2:
+            # Close button - properly aligned
+            if st.button("✕", key=f"delete_{idx}", help="Delete this chat history", 
+                        type="secondary"):
+                if delete_chat_history(chat_file):
+                    st.success("Chat deleted")
+                    st.rerun()
+                else:
+                    st.error("Failed to delete chat")
 else:
     st.sidebar.info("No chat history available")
 
