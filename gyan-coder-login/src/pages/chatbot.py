@@ -337,6 +337,18 @@ if chat_histories:
 else:
     st.sidebar.info("No chat history available")
 
+# Display welcome message if chat history is empty
+if not st.session_state['chat_history']:
+    username = st.session_state.get('username', 'there')  # Get username or default to 'there'
+    # Capitalize the first letter of the username
+    capitalized_username = username[0].upper() + username[1:] if username else 'There'
+    st.markdown(
+        f"<div class='bot-message'>"
+        f"👋 Hi {capitalized_username} I’m here to help you with coding—whether it's solving problems, building projects, or learning new languages. To get started, just type your question what you need help with, and I’ll guide you through it!"
+        "</div>", 
+        unsafe_allow_html=True
+    )
+
 # Display chat history with custom CSS
 chat_container = st.container()
 with chat_container:
