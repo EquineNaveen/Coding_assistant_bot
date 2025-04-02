@@ -128,6 +128,7 @@ with st.sidebar:
     st.markdown("- Get syntax examples")
     st.markdown("- Request code snippets")
     st.markdown("- Debugging assistance")
+    st.markdown("- Code Optimization Tips")
 
 # Hide default Streamlit sidebar navigation
 no_sidebar_style = """
