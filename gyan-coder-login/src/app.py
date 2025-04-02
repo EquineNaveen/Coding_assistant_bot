@@ -12,7 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # Set page config at the very top
 st.set_page_config(page_title="Gyan Coder - Login", page_icon="🔐", layout="centered")
 
-# Add CSS to remove all space in sidebar before we add any content
+
 st.markdown("""
     <style>
     /* More aggressive sidebar space removal targeting Streamlit's specific structure */
@@ -106,23 +106,19 @@ st.markdown("""
 
 # Display ISRO image in sidebar
 with st.sidebar:
-    # Use absolute path to the image
+   
     image_path = os.path.join(os.path.dirname(__file__), "assets", "isro.jpg")
     
-    # Check if the image exists, if not, create a message
+
     if os.path.exists(image_path):
         st.image(image_path, use_column_width=True)
     else:
         st.warning(f"Image not found at: {image_path}")
-        st.info("Please make sure the 'assets' folder exists in the src directory and contains 'isro.jpg'")
-    
-    # Add a spacer before the horizontal line
+     
     st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
     
-    # Add a horizontal line separator after the image with better spacing
     st.markdown("<hr style='margin-top: 5px; margin-bottom: 10px; border-width: 3px; background-color: #333;'>", unsafe_allow_html=True)
-    
-    # Add helper text in sidebar
+
     st.markdown("### Your Coding Assistant")
     st.markdown("- Ask for coding help")
     st.markdown("- Get syntax examples")
@@ -140,7 +136,7 @@ no_sidebar_style = """
 """
 st.markdown(no_sidebar_style, unsafe_allow_html=True)
 
-# Add custom CSS for styling
+
 st.markdown("""
     <style>
     .title-container {
@@ -160,7 +156,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Add the same footer CSS as in chatbot.py
 st.markdown("""
     <style>
     /* Footer styling */
@@ -261,7 +256,7 @@ def change_password(username, email, new_password):
 def is_valid_email(email):
     return bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
 
-# UI - Centered Title
+
 st.markdown('<div class="title-container"><span class="main-title">GYAN CODER LOGIN</span></div>', unsafe_allow_html=True)
 
 # Session state for tabs and forgot password

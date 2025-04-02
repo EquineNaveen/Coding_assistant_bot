@@ -23,12 +23,11 @@ def save_chat_history():
     if not st.session_state.get('chat_history'):
         return
     
-    # Get the first query from chat history
     first_message = next((msg for msg in st.session_state['chat_history'] if msg[0] == "user"), None)
     if not first_message:
         return
     
-    # Create filename from first query (limited to 50 chars, sanitized)
+
     first_query = first_message[1][:50]  # Limit length
     # Remove special characters and spaces, replace with underscores
     safe_filename = "".join(c if c.isalnum() else "_" for c in first_query).strip("_")
@@ -65,7 +64,7 @@ def delete_chat_history(chat_file):
     filepath = user_dir / chat_file
     
     if filepath.exists():
-        filepath.unlink()  # Delete the file
+        filepath.unlink() 
         return True
     return False
 
@@ -86,10 +85,9 @@ if 'chat_history' not in st.session_state:
 if 'logout' not in st.session_state:
     st.session_state['logout'] = False
 
-# Persist authentication state using query parameters
+
 query_params = st.query_params
 
-# Restore session state from query parameters if available
 if not st.session_state['authenticated'] and 'authenticated' in query_params and 'username' in query_params:
     st.session_state['authenticated'] = query_params['authenticated'] == 'true'
     st.session_state['username'] = query_params['username']
@@ -118,34 +116,17 @@ st.query_params = {
 # Set page config for chatbot
 st.set_page_config(page_title="Coding Chatbot", page_icon="🤖", layout="centered")
 
-# Chatbot UI
-col1, col2, col3 = st.columns([6, 1, 1])
+col1, col2 = st.columns([6, 1])
 with col1:
     st.title("🤖 Code Helper Bot")
 with col2:
     if st.button("New Chat", key="clear_chat_btn"):
-        if st.session_state['chat_history']:  # Save current chat before clearing
+        if st.session_state['chat_history']:  
             save_chat_history()
-        st.session_state['chat_history'] = []  # Clear chat history
+        st.session_state['chat_history'] = []  
         st.rerun()
-with col3:
-    if st.button("Logout", key="logout_btn"):
-        if st.session_state.get('authenticated', False):
-            # Clear login state and redirect to login
-            st.session_state.clear()  # Clear all session state variables
-            st.session_state['logout'] = True  # Set logout flag
-            st.query_params = {}  # Clear query parameters
-            st.markdown(
-                "<p style='color: green; font-size: 16px; font-weight: bold; text-align: center;'>Logged out</p>",
-                unsafe_allow_html=True
-            )  # Display "Logged out" with styling
-            st.query_params = {"page": "login"}  # Redirect to login page
-            st.stop()  # Stop further execution to ensure the page is reset
-        else:
-            st.warning("You are not logged in. Please log in to continue.")
-            st.stop()
 
-# Custom CSS for right and left alignment of messages with black text
+
 st.markdown("""
     <style>
     /* Hide default Streamlit sidebar navigation */
@@ -364,12 +345,32 @@ st.markdown("""
         font-weight: bold;
         margin: 0 10px;
     }
+    
+    /* Logout button in sidebar */
+    .logout-btn {
+        width: 100%;
+        text-align: center !important;
+        padding: 8px !important;
+        margin-top: 10px !important;
+        margin-bottom: 15px !important;
+        background-color: transparent !important;
+        color: black !important;
+        border-radius: 4px !important;
+        border: 1px solid black !important;
+        cursor: pointer !important;
+        font-weight: bold !important;
+    }
+    
+    .logout-btn:hover {
+        background-color: #f0f2f6 !important;
+    }
+    
     </style>
 """, unsafe_allow_html=True)
 
-# Add ISRO logo above Previous Chats title
+
 try:
-    # Try different possible paths for the image
+
     image_paths = [
         "isro.jpg",
         Path(__file__).parent / "isro.jpg",
@@ -388,13 +389,90 @@ try:
             continue
     
     if not image_found:
-        # If image isn't found, display a placeholder or text instead
         st.sidebar.markdown("### ISRO")
 except Exception as e:
-    st.sidebar.write("ISRO")  # Fallback text if image loading fails
+    st.sidebar.write("ISRO") 
 
-# Updated chat history section with improved alignment
-st.sidebar.title("Previous Chats")
+
+st.sidebar.markdown(
+    """
+    <style>
+    /* Ensure the logout button always has a black border */
+    [data-testid="stButton"] button[kind="primary"] {
+        background-color: transparent !important;
+        color: black !important;
+        border: 1px solid black !important; 
+        text-align: center !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    [data-testid="stButton"] button[kind="primary"] > div {
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+    
+    [data-testid="stButton"] button[kind="primary"]:hover {
+        background-color: rgba(0, 0, 0, 0.05) !important;
+        color: black !important;
+        border: 1px solid black !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* More specific selector to override any conflicting styles */
+    section[data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"] {
+        border: 2px solid black !important;
+        margin-top: 5px !important;
+        margin-bottom: 5px !important;
+    }
+    
+    /* Additional hover effect for sidebar logout button */
+    section[data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"]:hover {
+        background-color: rgba(0, 0, 0, 0.1) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+if st.sidebar.button("Logout", key="sidebar_logout_btn", type="primary", use_container_width=True):
+    if st.session_state.get('authenticated', False):
+        st.session_state.clear() 
+        st.session_state['logout'] = True  
+        st.query_params = {}  
+  
+        st.success("Logged out successfully!")
+        
+        html_redirect = """
+            <meta http-equiv="refresh" content="1; url=/" />
+            <script>
+                window.onload = function() {
+                    setTimeout(function() {
+                        window.location.href = '/';
+                    }, 0);
+                }
+            </script>
+        """
+        st.markdown(html_redirect, unsafe_allow_html=True)
+    
+        try:
+            st._rerun_with_location(location="/")
+        except:
+            pass
+        st.stop()
+    else:
+        st.warning("You are not logged in. Please log in to continue.")
+        st.stop()
+
+
+st.sidebar.markdown("<hr style='margin: 5px 0px 0px 0px; border: none; height: 1px; background-color: #e0e0e0;'>", unsafe_allow_html=True)
+
+st.sidebar.markdown("<h3 style='margin-top: 0px; margin-bottom: 10px;'>Previous Chats</h3>", unsafe_allow_html=True)
 chat_histories = load_chat_histories()
 
 if chat_histories:
@@ -405,12 +483,12 @@ if chat_histories:
         reverse=True
     )
     
-    # Create a container for each history entry with a well-aligned close button
+  
     for idx, (chat_file, chat_data) in enumerate(sorted_histories):
-        col1, col2 = st.sidebar.columns([8, 1])  # Adjusted ratio for better alignment
+        col1, col2 = st.sidebar.columns([8, 1])  
         
         with col1:
-            # Chat history button
+         
             if st.button(
                 f"{chat_data['first_query'][:30]}{'...' if len(chat_data['first_query']) > 30 else ''}",
                 key=f"chat_history_{idx}",
@@ -420,7 +498,7 @@ if chat_histories:
                 st.rerun()
         
         with col2:
-            # Close button - properly aligned
+          
             if st.button("✕", key=f"delete_{idx}", help="Delete this chat history", 
                         type="secondary"):
                 if delete_chat_history(chat_file):
@@ -433,8 +511,7 @@ else:
 
 # Display welcome message if chat history is empty
 if not st.session_state['chat_history']:
-    username = st.session_state.get('username', 'there')  # Get username or default to 'there'
-    # Capitalize the first letter of the username
+    username = st.session_state.get('username', 'there')  
     capitalized_username = username[0].upper() + username[1:] if username else 'There'
     st.markdown(
         f"<div class='bot-message'>"
@@ -443,7 +520,7 @@ if not st.session_state['chat_history']:
         unsafe_allow_html=True
     )
 
-# Display chat history with custom CSS
+
 chat_container = st.container()
 with chat_container:
     for message in st.session_state['chat_history']:
@@ -451,15 +528,15 @@ with chat_container:
         if role == "user":
             st.markdown(f"<div class='user-message'>{text}</div>", unsafe_allow_html=True)
         else:
-            # If the response has code and explanation
+           
             if code:
                 st.markdown(f"<div class='bot-message'>{text}</div>", unsafe_allow_html=True)
-                st.code(code, language="python")  # ✅ Proper code block with highlighting
+                st.code(code, language="python")  
             else:
-                # Properly render markdown for headings and explanations
-                st.markdown(text, unsafe_allow_html=False)  # ✅ Correct markdown parsing
+               
+                st.markdown(text, unsafe_allow_html=False)  
 
-# Add footer at the bottom of the page
+
 st.markdown("""
     <div class="footer">
         <div class="footer-content">
@@ -468,11 +545,10 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Handle user input
 user_input = st.chat_input("Ask me anything about coding...")
 
 if user_input:
-    # Add user message to chat
+ 
     st.session_state['chat_history'].append(("user", user_input, None))
     st.markdown(f"<div class='user-message'>{user_input}</div>", unsafe_allow_html=True)
 
@@ -492,12 +568,10 @@ if user_input:
 
         # Display explanation (if any) and code block
         if bot_message:
-            st.markdown(bot_message, unsafe_allow_html=False)  # ✅ Fixed: Correctly display headings
-        st.code(code_block, language="python")  # ✅ Properly display code
+            st.markdown(bot_message, unsafe_allow_html=False)  
+        st.code(code_block, language="python") 
     else:
-        # Add plain text bot response if no code is detected
         st.session_state['chat_history'].append(("assistant", bot_response, None))
-        st.markdown(bot_response, unsafe_allow_html=False)  # ✅ Correct markdown display
+        st.markdown(bot_response, unsafe_allow_html=False) 
     
-    # Save chat after each message
     save_chat_history()
