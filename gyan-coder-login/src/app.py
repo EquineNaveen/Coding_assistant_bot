@@ -27,6 +27,47 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Add the same footer CSS as in chatbot.py
+st.markdown("""
+    <style>
+    /* Footer styling */
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 22%; /* Position after the sidebar (sidebar is typically ~22% of screen width) */
+        right: 0;
+        background-color: transparent;
+        padding: 10px 0;
+        text-align: center;
+        font-size: 14px;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 78%; /* Width should be 100% minus the sidebar width */
+        margin-top: 20px;
+        z-index: 100;
+    }
+    
+    .footer-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .footer-logo {
+        height: 30px;
+        width: auto;
+    }
+    
+    .footer-text {
+        font-weight: bold;
+        margin: 0 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Load user data from JSON file
 def load_users():
     try:
@@ -177,3 +218,12 @@ elif st.session_state.active_tab == "signup":
             st.switch_page("pages/chatbot.py")  # Changed from st.rerun() to st.switch_page()
         else:
             st.error("Username already exists. Try another one.")
+
+# Add footer at the bottom of the page
+st.markdown("""
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-text">🚀 Built by Team GYAAN</div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
