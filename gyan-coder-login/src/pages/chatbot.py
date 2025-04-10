@@ -5,6 +5,18 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+# Initialize session state variables at the very beginning
+if 'authenticated' not in st.session_state:
+    st.session_state['authenticated'] = False
+if 'username' not in st.session_state:
+    st.session_state['username'] = None
+if 'chat_history' not in st.session_state:
+    st.session_state['chat_history'] = []
+if 'current_chat_id' not in st.session_state:
+    st.session_state['current_chat_id'] = None
+if 'logout' not in st.session_state:
+    st.session_state['logout'] = False
+
 # Function definitions
 def get_user_chat_dir():
     """Create and return the user's chat directory path."""
@@ -27,7 +39,6 @@ def save_chat_history():
     if not first_message:
         return
     
-
     first_query = first_message[1][:50]  # Limit length
     # Remove special characters and spaces, replace with underscores
     safe_filename = "".join(c if c.isalnum() else "_" for c in first_query).strip("_")
@@ -72,25 +83,17 @@ def get_response(user_query):
     """Send user query to gyancoder.py and get model response."""
     return get_coding_response(user_query)
 
-# Initialize authentication state and session variables
-if 'authenticated' not in st.session_state:
-    st.session_state['authenticated'] = False
-
-if 'username' not in st.session_state:
-    st.session_state['username'] = None
-
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = []
-
-if 'logout' not in st.session_state:
-    st.session_state['logout'] = False
-
-
 query_params = st.query_params
 
 if not st.session_state['authenticated'] and 'authenticated' in query_params and 'username' in query_params:
     st.session_state['authenticated'] = query_params['authenticated'] == 'true'
     st.session_state['username'] = query_params['username']
+    # Load last chat or initialize new one
+    chat_histories = load_chat_histories()
+    if chat_histories:
+        latest_chat = sorted(chat_histories, key=lambda x: x[1].get('timestamp', ''), reverse=True)[0]
+        st.session_state['chat_history'] = latest_chat[1]['messages']
+        st.session_state['current_chat_id'] = latest_chat[0]
 
 # Check authentication
 if not st.session_state['authenticated']:
@@ -124,8 +127,8 @@ with col2:
         if st.session_state['chat_history']:  
             save_chat_history()
         st.session_state['chat_history'] = []  
+        st.session_state['current_chat_id'] = None
         st.rerun()
-
 
 st.markdown("""
     <style>
@@ -495,6 +498,7 @@ if chat_histories:
                 use_container_width=True
             ):
                 st.session_state['chat_history'] = chat_data['messages']
+                st.session_state['current_chat_id'] = chat_file
                 st.rerun()
         
         with col2:
