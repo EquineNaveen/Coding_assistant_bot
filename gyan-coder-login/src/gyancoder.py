@@ -1,4 +1,5 @@
 import groq
+import re
 from dotenv import load_dotenv
 import os
 
@@ -11,7 +12,7 @@ GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 client = groq.Client(api_key=GROQ_API_KEY)
 
 # Model name
-MODEL_NAME = "qwen-2.5-coder-32b"
+MODEL_NAME = "qwen-qwq-32b"
 
 # System message with instruction to prioritize language or default to Python
 chat_history = [
@@ -39,6 +40,17 @@ def log_conversation(user_query, assistant_reply):
         file.write("-----\n")  # Add separator for clarity
 
 
+def clean_response(text):
+    """Remove <think> tags and their content from the response."""
+    # Pattern to match <think> tags and everything between them
+    pattern = r'<think>.*?</think>'
+    # Remove the matched patterns
+    cleaned_text = re.sub(pattern, '', text, flags=re.DOTALL)
+    # Remove any extra whitespace that might result from the removal
+    cleaned_text = re.sub(r'\n\s*\n', '\n\n', cleaned_text.strip())
+    return cleaned_text
+
+
 def get_coding_response(user_query):
     """Sends user query to Groq API and returns the response."""
     chat_history.append({"role": "user", "content": user_query})
@@ -51,6 +63,10 @@ def get_coding_response(user_query):
             max_tokens=4096,
         )
         assistant_reply = response.choices[0].message.content.strip()
+        
+        # Clean the response to remove <think> tags and their content
+        assistant_reply = clean_response(assistant_reply)
+        
         chat_history.append({"role": "assistant", "content": assistant_reply})
 
         # Log query and response to file
