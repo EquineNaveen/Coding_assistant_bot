@@ -137,7 +137,12 @@ st.markdown("""
         display: none;
     }
     
-    /* Remove space above first element in sidebar (ISRO image) */
+    /* Hide sidebar header with logo and collapse button */
+    div[data-testid="stSidebarHeader"] {
+        display: none !important;
+    }
+    
+    /* Remove space above first element in sidebar (coding image) */
     section[data-testid="stSidebar"] > div:first-child > div:first-child {
         margin-top: -25px !important;
         padding-top: 0 !important;
@@ -375,10 +380,8 @@ st.markdown("""
 try:
 
     image_paths = [
-        "isro.jpg",
-        Path(__file__).parent / "isro.jpg",
-        Path(__file__).parent.parent / "assets" / "isro.jpg",
-        Path(__file__).parent.parent / "static" / "isro.jpg"
+        Path(__file__).parent.parent / "assets" / "codingbot.png",
+
     ]
     
     image_found = False
@@ -392,9 +395,9 @@ try:
             continue
     
     if not image_found:
-        st.sidebar.markdown("### ISRO")
+        st.sidebar.markdown("### Coding Bot")
 except Exception as e:
-    st.sidebar.write("ISRO") 
+    st.sidebar.write("Coding Bot") 
 
 
 st.sidebar.markdown(
@@ -544,7 +547,7 @@ with chat_container:
 st.markdown("""
     <div class="footer">
         <div class="footer-content">
-            <div class="footer-text">🚀 Built by Team GYAAN</div>
+            <div class="footer-text">🚀 Built by NAVEEN</div>
         </div>
     </div>
 """, unsafe_allow_html=True)

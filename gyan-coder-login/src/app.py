@@ -104,21 +104,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Display ISRO image in sidebar
+
 with st.sidebar:
    
-    image_path = os.path.join(os.path.dirname(__file__), "assets", "isro.jpg")
-    
-
-    if os.path.exists(image_path):
-        st.image(image_path, use_column_width=True)
-    else:
-        st.warning(f"Image not found at: {image_path}")
+    # Removed logo image and horizontal line
      
     st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
     
-    st.markdown("<hr style='margin-top: 5px; margin-bottom: 10px; border-width: 3px; background-color: #333;'>", unsafe_allow_html=True)
-
     st.markdown("### Your Coding Assistant")
     st.markdown("- Ask for coding help")
     st.markdown("- Get syntax examples")
@@ -351,7 +343,7 @@ elif st.session_state.active_tab == "signup":
 st.markdown("""
     <div class="footer">
         <div class="footer-content">
-            <div class="footer-text">🚀 Built by Team GYAAN</div>
+            <div class="footer-text">🚀 Built by NAVEEN</div>
         </div>
     </div>
 """, unsafe_allow_html=True)
