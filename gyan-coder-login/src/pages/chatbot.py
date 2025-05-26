@@ -610,3 +610,6 @@ if user_input:
         st.markdown(bot_response, unsafe_allow_html=False) 
     
     save_chat_history()
+    
+    # Refresh the page after response generation
+    st.rerun()
