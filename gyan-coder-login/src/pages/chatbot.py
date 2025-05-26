@@ -559,8 +559,36 @@ if user_input:
     st.session_state['chat_history'].append(("user", user_input, None))
     st.markdown(f"<div class='user-message'>{user_input}</div>", unsafe_allow_html=True)
 
+    thinking_placeholder = st.empty()
+    with thinking_placeholder.container():
+        st.markdown("""
+            <div class='bot-message' style='display: flex; align-items: center; gap: 10px;'>
+                <div style='display: flex; gap: 4px;'>
+                    <div style='width: 8px; height: 8px; background-color: #666; border-radius: 50%; animation: thinking 1.4s infinite ease-in-out both; animation-delay: -0.32s;'></div>
+                    <div style='width: 8px; height: 8px; background-color: #666; border-radius: 50%; animation: thinking 1.4s infinite ease-in-out both; animation-delay: -0.16s;'></div>
+                    <div style='width: 8px; height: 8px; background-color: #666; border-radius: 50%; animation: thinking 1.4s infinite ease-in-out both;'></div>
+                </div>
+                <span>Thinking...</span>
+            </div>
+            <style>
+                @keyframes thinking {
+                    0%, 80%, 100% { 
+                        transform: scale(0);
+                        opacity: 0.5;
+                    } 
+                    40% { 
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+            </style>
+        """, unsafe_allow_html=True)
+
+
     # Get and display response from gyancoder.py
     bot_response = get_response(user_input)
+
+    thinking_placeholder.empty()
 
     # Check if the response contains a code block
     if "```python" in bot_response and "```" in bot_response:

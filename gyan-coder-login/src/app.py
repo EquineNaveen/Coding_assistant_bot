@@ -15,122 +15,6 @@ st.set_page_config(page_title="Gyan Coder - Login", page_icon="🔐", layout="ce
 
 st.markdown("""
     <style>
-    /* More aggressive sidebar space removal targeting Streamlit's specific structure */
-    .main .block-container {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    /* Target the root sidebar element */
-    [data-testid="stSidebar"] {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    /* Target the sidebar content specifically */
-    .stSidebarContent, .css-1d391kg, .css-163ttbj, .css-1vq4p4l {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    /* Target all sidebar blocks and containers */
-    [data-testid="stSidebar"] > div > div,
-    [data-testid="stSidebar"] > div,
-    [data-testid="stSidebar"] .block-container,
-    [data-testid="stSidebar"] .element-container {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    /* Target the immediate children of the sidebar */
-    [data-testid="stSidebar"] > * {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    /* Target any additional wrapping divs */
-    [data-testid="stSidebar"] div[data-stale="false"],
-    [data-testid="stSidebar"] div.withScreencast {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    /* Target the very first elements in the sidebar */
-    [data-testid="stSidebar"] > div:first-child,
-    [data-testid="stSidebar"] > div > div:first-child,
-    [data-testid="stSidebar"] .element-container:first-child,
-    [data-testid="stSidebar"] div:first-of-type {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-    
-    /* Target the image directly */
-    [data-testid="stSidebar"] img,
-    [data-testid="stSidebar"] [data-testid="stImage"] {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-    
-    /* The existing selectors */
-    section[data-testid="stSidebar"] > div {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    section[data-testid="stSidebar"] > div > div:first-child {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    section[data-testid="stSidebar"] .element-container:first-child {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-    section[data-testid="stSidebar"] div:first-child {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-    section[data-testid="stSidebar"] .block-container {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    section[data-testid="stSidebar"] div.block-container > div:first-child {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
-with st.sidebar:
-   
-    # Removed logo image and horizontal line
-     
-    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-    
-    st.markdown("### Your Coding Assistant")
-    st.markdown("- Ask for coding help")
-    st.markdown("- Get syntax examples")
-    st.markdown("- Request code snippets")
-    st.markdown("- Debugging assistance")
-    st.markdown("- Code Optimization Tips")
-
-# Hide default Streamlit sidebar navigation
-no_sidebar_style = """
-    <style>
-        div[data-testid="stSidebarNav"] {
-            display: none;
-        }
-    </style>
-"""
-st.markdown(no_sidebar_style, unsafe_allow_html=True)
-
-
-st.markdown("""
-    <style>
     .title-container {
         display: flex;
         justify-content: center;
@@ -139,11 +23,6 @@ st.markdown("""
     .main-title {
         font-size: 2.5rem;
         font-weight: bold;
-    }
-    /* Sidebar styling */
-    [data-testid="stSidebar"] {
-        background-color: #f5f5f5;
-        border-right: 1px solid #e0e0e0;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -154,7 +33,7 @@ st.markdown("""
     .footer {
         position: fixed;
         bottom: 0;
-        left: 22%; /* Position after the sidebar (sidebar is typically ~22% of screen width) */
+        left: 0;
         right: 0;
         background-color: transparent;
         padding: 10px 0;
@@ -164,7 +43,7 @@ st.markdown("""
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 78%; /* Width should be 100% minus the sidebar width */
+        width: 100%;
         margin-top: 20px;
         z-index: 100;
     }
